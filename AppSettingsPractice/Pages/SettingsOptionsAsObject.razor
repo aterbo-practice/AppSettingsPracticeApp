@@ -1,0 +1,38 @@
+﻿@page "/AsObject" 
+@inject IConfiguration _config
+
+<h1>Settings Options As an Object</h1>
+<p>
+    This page pulls from appsettings or secrets by implimenting:
+    @@using Mircosoft.Extensions.Configuration and @@inject IConfiguration. <br />
+    Each item is pulled in as a single object.<br /><br />
+    You will see either: <br />
+    appsettings.json, <br />
+    appsettings.Development.json, <br />
+    appsettings.Testing.json,  -or-<br />
+    User Secrets <br />
+</p>
+
+Main Level String: @mainSettingsObject.MainLevelString
+<br />
+SublevelString: @mainSettingsObject.SubLevel.SubLevelString
+<br />
+SublevelInt: @mainSettingsObject.SubLevel.SubLevelInt
+<br />
+SublevelBool: @mainSettingsObject.SubLevel.SubLevelBool.ToString()
+<br />
+@foreach (string listItem in mainSettingsObject.SubLevel.SubLevelStringList)
+{
+    @listItem
+    <br />
+}
+
+@code {
+    MainSettingsObject mainSettingsObject = new MainSettingsObject();
+
+
+    protected override void OnInitialized()
+    {
+        mainSettingsObject = _config.GetSection("MainLevel").Get<MainSettingsObject>();
+    }
+}

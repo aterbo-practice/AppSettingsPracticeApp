@@ -1,0 +1,49 @@
+﻿@page "/"
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration _config
+
+
+<h1>Settings Options As Lines</h1>
+<p>
+    This page pulls from appsettings or secrets by implimenting:
+    @@using Mircosoft.Extensions.Configuration and @@inject IConfiguration. Each item is
+    pulled in individually and displayed as an individual variable.<br /><br />
+    You will see either: <br />
+    appsettings.json, <br />
+    appsettings.Development.json, <br />
+    appsettings.Testing.json,  -or-<br />
+    User Secrets <br />
+</p>
+
+Main Level String: @mainLevelString
+<br />
+SublevelString: @subLevelString
+<br />
+SublevelInt: @subLevelInt
+<br />
+SublevelBool: @subLevelBool.ToString()
+<br />
+@foreach (string listItem in subLevelStringList)
+{
+    @listItem
+    <br />
+}
+
+@code {
+    string mainLevelString = "";
+    string subLevelString = "";
+    int subLevelInt = 0;
+    bool subLevelBool = true;
+    List<string> subLevelStringList = new List<string>();
+
+
+    protected override void OnInitialized()
+    {
+        mainLevelString = _config.GetValue<string>("MainLevel:MainLevelString");
+        subLevelString = _config.GetValue<string>("MainLevel:SubLevel:SubLevelString");
+        subLevelInt = _config.GetValue<int>("MainLevel:SubLevel:SubLevelInt");
+        subLevelBool = _config.GetValue<bool>("MainLevel:SubLevel:SubLevelBool");
+
+        subLevelStringList = _config.GetSection("MainLevel:SubLevel:SubLevelStringList").Get<List<string>>();
+    }
+}
